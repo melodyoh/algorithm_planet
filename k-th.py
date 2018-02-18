@@ -7,22 +7,22 @@ Created on Sun Feb 18 00:37:16 2018
 import random
 import time
 import heapq
+heapq.nsmallest
 
-def insertion_sort(v,p,r):
-    for i in range(p+1,r):
-        key = v[i]
-        j = i -1
-        while(key < v[j]):
-            v[j+1] = v[j]
-            if (j == 0):
-                j -= 1
-                break
-            j -= 1
-        v[j+1] = key
- 
-def get_median(V):
-    half = (len(V)+1)//2
-    return sorted(V)[half-1] 
+#==============================================================================
+# def insertion_sort(v,p,r):
+#     for i in range(p+1,r):
+#         key = v[i]
+#         j = i -1
+#         while(key < v[j]):
+#             v[j+1] = v[j]
+#             if (j == 0):
+#                 j -= 1
+#                 break
+#             j -= 1
+#         v[j+1] = key
+#==============================================================================
+
 #==============================================================================
 # def get_median(V,p,r):
 #     half = (p-r+1)//2  #若是长度(p-r)为偶, 返回第一个数为中位数，p-r=4为2，p-r=5为3
@@ -40,6 +40,10 @@ def get_median(V):
 #         
 #     return V[p+ (half-1)] 
 #==============================================================================
+def get_median(V):
+    half = (len(V)+1)//2
+    return sorted(V)[half-1] 
+
 def partition(A,x):
     p = 0
     r = len(A)
@@ -54,8 +58,7 @@ def partition(A,x):
     A[i],A[r-1] = A[r-1],A[i]
     return i
 
-        
-    
+#随机选择
 def RS (V,p,r,k):
     
     if p+1 == r:
@@ -69,17 +72,18 @@ def RS (V,p,r,k):
     else:
         return RS(V,p,q,k)
 
-
-
+#排序读取第k个
 def FindKth(V,k):
     V.sort()
     return V[k-1]
-    
+#优先级队列      
+def FindKth2(V,k): 
+    return heapq.nsmallest(k,V)[-1]
+#排序后随机选择   
 def FindKth3(V,k): 
     V.sort()
     return RS(V,0,len(V),5)
-    
-
+#最坏情况为线性时间的选择算法
 def select(V,k):
     if len(V) <= 5:
         x = get_median(V)
@@ -104,7 +108,6 @@ if __name__ == '__main__':
     num = 10000000
     k =10000
     range_b = 10000
-
 #1. 排序之后取第k个。   
     start = time.time()
     V = []
@@ -115,7 +118,7 @@ if __name__ == '__main__':
     start = time.time()
     print(FindKth(V,k))
     print("Time of finding the k-th",time.time()-start)
-#2. 用最小优先级队列依次取出前k个。
+#2.1 用最小优先级队列依次取出前k个。
     start = time.time()
     V = []
     for i in range(num):
@@ -124,7 +127,16 @@ if __name__ == '__main__':
     for j in range(k-1):
         heapq.heappop(V)
     print (heapq.heappop(V))
-    print("Time of finding the k-th",time.time()-start)        
+    print("Time of finding the k-th",time.time()-start)
+#2.2 直接用前k个函数
+    start = time.time()
+    V = []
+    for i in range(num):
+        V.append(random.randint(0,range_b))
+    print("Time of generating the numbers",time.time()-start)
+    start = time.time()
+    print(FindKth2(V,k))
+    print("Time of finding the k-th",time.time()-start)      
 #3. 随机选择算法    
     start = time.time()
     V = []
